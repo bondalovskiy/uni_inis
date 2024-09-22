@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.product {
+    border: 1px solid #ccc;
+    margin: 20px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.product:hover {
+    transform: scale(1.05);
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.color-options {
+    margin-top: 10px;
+}
+
+.color-options button {
+    margin-right: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease;
+}
+
+.color-options button:hover {
+    background-color: #ddd;
+}
+
+h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+p {
+    margin: 5px 0;
+}
+
+#products {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+/* Медиазапрос для мобильных устройств */
+@media (max-width: 600px) {
+    .product {
+        width: calc(100% - 40px);
+        margin: 10px auto;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+}
+
+/* Стили для модального окна */
+.modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7); /* Полупрозрачный фон */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-images {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-images img {
+    width: 45%; /* Устанавливаем ширину изображений */
+    height: auto;
+}
