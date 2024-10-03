@@ -35,10 +35,10 @@ window.onload = function() {
             isSticky = true;
             offsetX = event.clientX - selectedElement.getBoundingClientRect().left;
             offsetY = event.clientY - selectedElement.getBoundingClientRect().top;
-            selectedElement.style.backgroundColor = 'blue'; // изменение цвета
+            selectedElement.style.backgroundColor = 'blue';
         } else {
             isSticky = false;
-            selectedElement.style.backgroundColor = 'red'; // возврат цвета
+            selectedElement.style.backgroundColor = 'red';
             selectedElement = null;
         }
     }
@@ -47,8 +47,8 @@ window.onload = function() {
     function handleKeyUp(event) {
         if (event.key === 'Escape' && selectedElement) {
             isSticky = false;
-            selectedElement.style.backgroundColor = 'red'; // возврат цвета
-            let { top, left } = initialPosition.get(selectedElement); // возврат на исходную позицию
+            selectedElement.style.backgroundColor = 'red';
+            let { top, left } = initialPosition.get(selectedElement);
             selectedElement.style.left = left;
             selectedElement.style.top = top;
             selectedElement = null;
