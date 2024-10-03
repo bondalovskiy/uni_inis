@@ -10,6 +10,7 @@ window.onload = function() {
             selectedElement = event.target;
             offsetX = event.clientX - selectedElement.getBoundingClientRect().left;
             offsetY = event.clientY - selectedElement.getBoundingClientRect().top;
+            event.preventDefault();
         }
     }
 
@@ -21,38 +22,42 @@ window.onload = function() {
     }
 
     function stopDrag() {
-        if (isSticky) {
-            selectedElement.style.backgroundColor = initialColor.get(selectedElement);
+        if (selectedElement && !isSticky) {
             selectedElement = null;
         }
     }
 
     function makeSticky(event) {
+        let targetElement = event.target;
+
         if (!isSticky) {
-            selectedElement = event.target;
+            selectedElement = targetElement;
             isSticky = true;
-            offsetX = event.clientX - selectedElement.getBoundingClientRect().left;
-            offsetY = event.clientY - selectedElement.getBoundingClientRect().top;
-            selectedElement.style.backgroundColor = 'blue'; // изменение цвета
-        } else {
-            isSticky = false;
+            offsetX = event.clientX - targetElement.getBoundingClientRect().left;
+            offsetY = event.clientY - targetElement.getBoundingClientRect().top;
+            targetElement.style.backgroundColor = 'blue';
+        }
+    }
+
+    function unstick(event) {
+        if (isSticky && selectedElement === event.target) {
             selectedElement.style.backgroundColor = initialColor.get(selectedElement);
+            isSticky = false;
             selectedElement = null;
         }
     }
 
     function handleKeyUp(event) {
         if (event.key === 'Escape' && selectedElement) {
-            isSticky = false;
             selectedElement.style.backgroundColor = initialColor.get(selectedElement);
             let { top, left } = initialPosition.get(selectedElement);
             selectedElement.style.left = left;
             selectedElement.style.top = top;
+            isSticky = false;
             selectedElement = null;
         }
     }
 
-    //на все таргеты
     document.querySelectorAll('.target').forEach((target) => {
         initialPosition.set(target, {
             top: target.style.top,
@@ -63,6 +68,7 @@ window.onload = function() {
 
         target.addEventListener('mousedown', startDrag);
         target.addEventListener('dblclick', makeSticky);
+        target.addEventListener('click', unstick); // по одиночному клику
     });
 
     document.addEventListener('mousemove', drag);
