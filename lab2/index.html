@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shirts Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="products"></div>
+
+<!--quickView-->
+<div id="quickViewModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-images">
+            <img id="modalImageFront" src="" alt="Front">
+            <img id="modalImageBack" src="" alt="Back">
+        </div>
+        <h2 id="modalName"></h2>
+        <p id="modalDescription"></p>
+        <p id="modalPrice"></p>
+    </div>
+</div>
+
+<script src="shirts.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
