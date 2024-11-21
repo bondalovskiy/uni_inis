@@ -25,7 +25,6 @@ window.onload = function() {
                     offsetY = clientY - selectedElement.getBoundingClientRect().top;
                 }
             } else {
-                // В режиме sticky берем любое касание
                 offsetX = clientX - selectedElement.getBoundingClientRect().left;
                 offsetY = clientY - selectedElement.getBoundingClientRect().top;
             }
@@ -50,15 +49,15 @@ window.onload = function() {
             const touchEndX = event.changedTouches[0].clientX;
             const touchEndY = event.changedTouches[0].clientY;
 
-            // Проверяем, был ли это быстрый тап
+            //тап
             const touchDuration = currentTime - touchStartTime;
             const touchDistance = Math.sqrt(
                 Math.pow(touchEndX - touchStartPosition.x, 2) +
                 Math.pow(touchEndY - touchStartPosition.y, 2)
             );
 
-            if (touchDuration < 300 && touchDistance < 10) { // Короткое нажатие без движения
-                if (currentTime - lastTapTime < 300) { // Двойное нажатие
+            if (touchDuration < 300 && touchDistance < 10) {
+                if (currentTime - lastTapTime < 300) { //дабл
                     toggleStickyMode(selectedElement);
                 }
                 lastTapTime = currentTime;
