@@ -89,5 +89,5 @@ window.onload = function () {
     document.addEventListener('mouseup', stopDrag);
     document.addEventListener('touchmove', drag, { passive: false });
     document.addEventListener('touchend', stopDrag);
-    document.addEventListener('touchstart', handleMultiTouch, { passive: false });
+    document.addEventListener('touchstart', handleMultiTouch, { passive: false }); //
 };
