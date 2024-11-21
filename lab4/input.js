@@ -1,32 +1,32 @@
-window.onload = function() {
+window.onload = function () {
     let selectedElement = null;
     let offsetX, offsetY;
     let isSticky = false;
     let initialPosition = new Map();
     let initialColor = new Map();
+    let isFollowingFinger = false; // Режим "следующий за пальцем"
 
     function startDrag(event) {
-        if (event.type === 'mousedown' || (event.type === 'touchstart' && event.touches.length === 1)) {
-            const clientX = event.type === 'mousedown' ? event.clientX : event.touches[0].clientX;
-            const clientY = event.type === 'mousedown' ? event.clientY : event.touches[0].clientY;
+        const isTouchEvent = event.type === 'touchstart';
+        const clientX = isTouchEvent ? event.touches[0].clientX : event.clientX;
+        const clientY = isTouchEvent ? event.touches[0].clientY : event.clientY;
 
-            if (!isSticky) {
-                selectedElement = event.target.classList.contains('target') ? event.target : null;
-                if (selectedElement) {
-                    offsetX = clientX - selectedElement.getBoundingClientRect().left;
-                    offsetY = clientY - selectedElement.getBoundingClientRect().top;
-                    event.preventDefault();
-                }
-            } else if (!selectedElement) {
-                selectedElement = [...document.querySelectorAll('.target')].find((el) => isSticky);
-            }
+        if (isFollowingFinger && !selectedElement) {
+            selectedElement = document.querySelector('.target'); // Захват любого элемента
+        }
+
+        if (selectedElement) {
+            offsetX = clientX - selectedElement.getBoundingClientRect().left;
+            offsetY = clientY - selectedElement.getBoundingClientRect().top;
+            event.preventDefault();
         }
     }
 
     function drag(event) {
         if (selectedElement) {
-            const clientX = event.type === 'mousemove' ? event.clientX : event.touches[0].clientX;
-            const clientY = event.type === 'mousemove' ? event.clientY : event.touches[0].clientY;
+            const isTouchEvent = event.type === 'touchmove';
+            const clientX = isTouchEvent ? event.touches[0].clientX : event.clientX;
+            const clientY = isTouchEvent ? event.touches[0].clientY : event.clientY;
 
             selectedElement.style.left = clientX - offsetX + 'px';
             selectedElement.style.top = clientY - offsetY + 'px';
@@ -40,7 +40,7 @@ window.onload = function() {
     }
 
     function makeSticky(event) {
-        let targetElement = event.target;
+        const targetElement = event.target;
 
         if (!isSticky) {
             selectedElement = targetElement;
@@ -49,9 +49,22 @@ window.onload = function() {
             offsetY = event.touches[0].clientY - targetElement.getBoundingClientRect().top;
             targetElement.style.backgroundColor = 'blue';
         } else {
-            selectedElement.style.backgroundColor = initialColor.get(selectedElement);
             isSticky = false;
-            selectedElement = null;
+            isFollowingFinger = true; // Включаем режим "следующий за пальцем"
+            selectedElement.style.backgroundColor = initialColor.get(selectedElement);
+        }
+    }
+
+    function handleTouchClick(event) {
+        const isTouchClick = event.type === 'touchend' && event.changedTouches.length === 1;
+        if (isTouchClick) {
+            const touch = event.changedTouches[0];
+            const clickedElement = document.elementFromPoint(touch.clientX, touch.clientY);
+
+            if (clickedElement === selectedElement) {
+                isFollowingFinger = false; // Завершаем режим "следующий за пальцем"
+                selectedElement = null;
+            }
         }
     }
 
@@ -63,10 +76,10 @@ window.onload = function() {
             selectedElement.style.left = left;
             selectedElement.style.top = top;
             isSticky = false;
+            isFollowingFinger = false;
             selectedElement = null;
         }
     }
-
 
     document.querySelectorAll('.target').forEach((target) => {
         initialPosition.set(target, {
@@ -79,9 +92,8 @@ window.onload = function() {
         target.addEventListener('mousedown', startDrag);
         target.addEventListener('dblclick', makeSticky);
         target.addEventListener('touchstart', startDrag, { passive: false });
-        target.addEventListener('touchend', stopDrag, { passive: false });
+        target.addEventListener('touchend', handleTouchClick, { passive: false });
     });
-
 
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', stopDrag);
@@ -96,6 +108,7 @@ window.onload = function() {
             selectedElement.style.left = left;
             selectedElement.style.top = top;
             isSticky = false;
+            isFollowingFinger = false;
             selectedElement = null;
         }
     });
