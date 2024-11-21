@@ -4,17 +4,13 @@ window.onload = function () {
     let isFollowingFinger = false; // Режим "следующий за пальцем"
     let initialPosition = new Map();
 
-    // Начать перетаскивание
+    // Начало перетаскивания
     function startDrag(event) {
         const isTouchEvent = event.type === 'touchstart';
         const clientX = isTouchEvent ? event.touches[0].clientX : event.clientX;
         const clientY = isTouchEvent ? event.touches[0].clientY : event.clientY;
 
-        if (isFollowingFinger && !selectedElement) {
-            selectedElement = document.querySelector('.target'); // Захватываем элемент
-        }
-
-        if (!selectedElement) {
+        if (!selectedElement || !isFollowingFinger) {
             selectedElement = event.target.classList.contains('target') ? event.target : null;
         }
 
@@ -41,31 +37,39 @@ window.onload = function () {
         event.preventDefault(); // Предотвращаем прокрутку
     }
 
-    // Завершить перетаскивание
-    function stopDrag(event) {
-        if (selectedElement && !isFollowingFinger) {
+    // Завершение перетаскивания
+    function stopDrag() {
+        if (!isFollowingFinger) {
             selectedElement = null;
         }
     }
 
-    // Двойное касание: режим "следующий за пальцем"
+    // Двойное касание: активация режима "следующий за пальцем"
     function toggleFollowMode(event) {
         if (event.type === 'touchstart' && event.touches.length === 1) {
-            isFollowingFinger = !isFollowingFinger;
-            if (isFollowingFinger) {
-                selectedElement = document.querySelector('.target');
-            } else {
-                selectedElement = null;
+            const targetElement = event.target;
+
+            if (targetElement.classList.contains('target')) {
+                if (!isFollowingFinger || selectedElement !== targetElement) {
+                    selectedElement = targetElement;
+                    isFollowingFinger = true;
+                    targetElement.style.backgroundColor = 'blue'; // Для визуального эффекта
+                } else {
+                    isFollowingFinger = false;
+                    targetElement.style.backgroundColor = ''; // Сбрасываем цвет
+                    selectedElement = null;
+                }
             }
         }
     }
 
-    // Сброс при втором касании
+    // Обработка второго касания
     function handleMultiTouch(event) {
         if (event.touches.length > 1 && selectedElement) {
             const { top, left } = initialPosition.get(selectedElement);
             selectedElement.style.left = left;
             selectedElement.style.top = top;
+            selectedElement.style.backgroundColor = ''; // Сброс цвета
             selectedElement = null;
             isFollowingFinger = false;
         }
@@ -78,16 +82,16 @@ window.onload = function () {
             left: `${rect.left}px`
         });
 
-        // Добавление событий
+        // События для каждого элемента
         target.addEventListener('mousedown', startDrag);
         target.addEventListener('touchstart', startDrag, { passive: false });
         target.addEventListener('touchstart', toggleFollowMode, { passive: false });
     });
 
-    // Слушатели для документа
+    // События для документа
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', stopDrag);
     document.addEventListener('touchmove', drag, { passive: false });
     document.addEventListener('touchend', stopDrag);
-    document.addEventListener('touchstart', handleMultiTouch, { passive: false }); //
+    document.addEventListener('touchstart', handleMultiTouch, { passive: false });
 };
